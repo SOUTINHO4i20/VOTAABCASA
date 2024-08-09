@@ -9,6 +9,7 @@
             margin: 0;
             padding: 0;
             overflow: hidden; /* Impede a rolagem da página se a imagem de fundo for maior que a tela */
+            font-family: Arial, sans-serif;
         }
         .background-image {
             position: absolute;
@@ -34,20 +35,21 @@
             margin-bottom: 20px;
         }
         .header img {
-            max-width: 30%;
+            max-width: 50%; /* Ajusta o tamanho da imagem do cabeçalho */
             height: auto;
             border-radius: 8px; /* Bordas arredondadas para a imagem */
         }
         .options {
             display: grid;
-            grid-template-columns: repeat(2, 1fr); /* Cria duas colunas de largura igual */
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Ajusta o número de colunas baseado na largura disponível */
             gap: 10px; /* Espaçamento entre os itens */
             max-height: 60vh; /* Altura máxima da área de opções para permitir rolagem dentro dela */
             overflow-y: auto; /* Adiciona rolagem vertical se necessário */
         }
         .option {
             display: flex;
-            align-items: center; /* Alinha verticalmente o conteúdo */
+            flex-direction: column; /* Alinha a imagem e o texto verticalmente */
+            align-items: center; /* Centraliza o conteúdo */
             gap: 10px; /* Espaçamento entre a imagem e o texto */
             cursor: pointer; /* Muda o cursor para uma mãozinha ao passar sobre o item */
         }
@@ -67,9 +69,10 @@
             display: flex;
             align-items: center;
             gap: 10px; /* Espaçamento entre a imagem e o texto */
-            font-size: 16px; /* Tamanho da fonte do texto */
+            font-size: 14px; /* Tamanho da fonte do texto */
             color: #333; /* Cor do texto */
             cursor: pointer; /* Muda o cursor para uma mãozinha ao passar sobre o texto */
+            text-align: center; /* Alinha o texto ao centro */
         }
         .option input[type="radio"]:checked + label::before {
             content: ''; /* Adiciona um elemento antes do texto */
@@ -108,6 +111,35 @@
         }
         button:focus {
             outline: none; /* Remove o contorno padrão ao focar no botão */
+        }
+
+        /* Media Query para Tablets */
+        @media (max-width: 768px) {
+            .header img {
+                max-width: 70%; /* Ajusta o tamanho da imagem do cabeçalho em tablets */
+            }
+            .option img {
+                width: 80px; /* Ajusta o tamanho das imagens das opções em tablets */
+                height: 80px; /* Ajusta o tamanho das imagens das opções em tablets */
+            }
+            .option label {
+                font-size: 12px; /* Ajusta o tamanho da fonte do texto das opções em tablets */
+            }
+        }
+
+        /* Media Query para Smartphones */
+        @media (max-width: 480px) {
+            .option img {
+                width: 60px; /* Ajusta o tamanho das imagens das opções em smartphones */
+                height: 60px; /* Ajusta o tamanho das imagens das opções em smartphones */
+            }
+            .option label {
+                font-size: 10px; /* Ajusta o tamanho da fonte do texto das opções em smartphones */
+            }
+            button {
+                font-size: 14px; /* Ajusta o tamanho da fonte do botão em smartphones */
+                padding: 8px 16px; /* Ajusta o espaçamento interno do botão em smartphones */
+            }
         }
     </style>
 </head>
@@ -235,14 +267,16 @@
             const selectedOption = form.querySelector('input[name="option"]:checked');
 
             if (selectedOption) {
+                // Enviar o voto por e-mail
                 emailjs.send("service_wzrd9ev", "template_vj2r1v8", {
                     vote: selectedOption.value
                 }).then(function(response) {
-                    console.log('Success!', response.status, response.text);
-                    alert('Seu voto foi enviado com sucesso!');
+                    // Limpar a seleção após o envio
+                    form.reset();
                 }, function(error) {
                     console.log('Failed...', error);
-                    alert('Falha ao enviar o voto.');
+                    // Limpar a seleção após falha, se necessário
+                    form.reset();
                 });
             } else {
                 alert('Por favor, selecione uma opção!');
